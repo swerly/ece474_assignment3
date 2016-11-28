@@ -17,7 +17,11 @@ typedef struct node{
 } varNode;
 
 typedef struct opNode{
-    varNode* input;
+    char operation;
+	char* printstr;
+	varNode* input1;
+	varNode* input2;
+	varNode* input3;
     varNode* output;
     struct opNode* next;
 } operationNode;

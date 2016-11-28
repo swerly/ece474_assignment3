@@ -9,9 +9,10 @@
 #include "parser.h"
 #include "lists.h"
 
+#define LINE_SIZE 80
 
 void beginParsing(mainContainer* container){
-    const int LINE_SIZE = 80;
+    //const int LINE_SIZE = 80;
     FILE* netlistIn;
     char currentLine[LINE_SIZE];
     char* token;
