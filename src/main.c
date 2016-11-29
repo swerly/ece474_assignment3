@@ -11,6 +11,7 @@
 int main(int argc, char** argv){
     mainContainer container;
     container.variables = NULL;
+    container.operations = NULL;
 
     //check for correct argument count
     if (argc < 4){

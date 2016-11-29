@@ -24,6 +24,21 @@ void addToList(varNode** list, varNode* varToAdd){
     //make the last node point to the new last node
     tNode->next = varToAdd;
 }
+void addToOpList(operationNode** list, operationNode* opToAdd)
+{
+    operationNode* tOpNode = *list;
+    if (tOpNode == NULL)
+    {
+        *list = opToAdd;
+        return;
+    }
+    while(tOpNode->next != NULL)
+    {
+        tOpNode = tOpNode->next;
+    }
+
+    tOpNode->next = opToAdd;
+}
 
 //prints the list starting at the header
 void printList(varNode* head) {
