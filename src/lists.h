@@ -23,9 +23,17 @@ typedef struct opNode{
 	varNode* input2;
 	varNode* input3;
     varNode* output;
+    struct opArrayNode* dependents;
+    struct opArrayNode* dependencies;
+    int ALAPcycle;
+    int ListRcycle;
     struct opNode* next;
 } operationNode;
 
+typedef struct opArrayNode{
+    operationNode * element;
+    struct opArrayNode* next;
+} operationArrayNode;
 //structure to hold all of our lists to pass easily between functions
 typedef struct{
     varNode* variables;
