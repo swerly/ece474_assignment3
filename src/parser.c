@@ -26,7 +26,6 @@ void beginParsing(mainContainer* container){
         printf("\nFile \"%s\" not found. Exiting...\n\n", container->inputFilename);
         return;
     }
-
     //start scanning line by line
     while( fgets(currentLine, LINE_SIZE, netlistIn)) {
 
@@ -117,7 +116,7 @@ void parseVariables(varNode** variableList, variableType type){
             tempVar->next = NULL;
             tempVar->varType = type;
 
-            addToList(variableList, tempVar);
+            addToVarList(variableList, tempVar);
         }
 
         token = strtok(NULL, " ,\t\n");

@@ -40,6 +40,18 @@ void addToOpList(operationNode** list, operationNode* opToAdd)
     tOpNode->next = opToAdd;
 }
 
+void addToOpArrayList(operationArrayNode** list, operationArrayNode* nodeToAdd){
+    operationArrayNode* tNode = *list;
+    if (tNode == NULL){
+        *list = nodeToAdd;
+        return;
+    }
+    while (tNode->next != NULL){
+        tNode = tNode->next;
+    }
+    tNode->next = nodeToAdd;
+}
+
 //prints the list starting at the header
 void printList(varNode* head) {
     varNode* tNode = head;

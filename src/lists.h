@@ -35,15 +35,19 @@ typedef struct opArrayNode{
     operationNode * element;
     struct opArrayNode* next;
 } operationArrayNode;
+
 //structure to hold all of our lists to pass easily between functions
 typedef struct{
     varNode* variables;
 	operationNode* operations;
     char inputFilename[30];
+	operationArrayNode* operationNodes;
+	int maxLatency;
 } mainContainer;
 
 
-void addToList(varNode** list, varNode* varToAdd);
+void addToVarList(varNode** list, varNode* varToAdd);
 void addToOpList(operationNode** list, operationNode* opToAdd);
+void addToOpArrayList(operationArrayNode** list, operationArrayNode* nodeToAdd);
 void printList(varNode* head);
 #endif //ECE474_ASSIGNMENT3_LISTS_H
