@@ -27,6 +27,7 @@ typedef struct opNode{
     struct opArrayNode* dependencies;
     int ALAPcycle;
     int ListRcycle;
+	int opType; 						//corresponds to 0-2 where 0 is add/sub, 1 is logic, 2 is mult
     struct opNode* next;
 } operationNode;
 
