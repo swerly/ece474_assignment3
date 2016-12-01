@@ -206,7 +206,7 @@ void parseBody(varNode** variableList, operationNode** opList, char* token)
 varNode* findVariable(varNode** variableList, char* token)
 {
     varNode* currNode = *variableList;
-    while(currNode->next != NULL)
+    while(currNode != NULL)
     {
         if(strcmp(token,currNode->name) == 0)
         {
