@@ -175,6 +175,7 @@ void parseBody(varNode** variableList, operationNode** opList, char* token)
                 return;
             }
             token2 = strtok(NULL, " ,\t\n");
+            token2 = strtok(NULL, " ,\t\n");
             newOp->input3 = findVariable(variableList, token2);
             if(newOp->input3 == NULL)
             {
@@ -200,6 +201,7 @@ void parseBody(varNode** variableList, operationNode** opList, char* token)
     {
         //if statement parsing
     }
+    addToOpList(opList,newOp);
     return;
 }
 
@@ -222,7 +224,7 @@ varNode* findVariable(varNode** variableList, char* token)
 
 void setOpType(operationNode* currNode)
 {
-    if(!strcmp(currNode->operation,"?") || !strcmp(currNode->operation,">>") || !strcmp(currNode->operation,"<<") || !strcmp(currNode->operation,"<") || !strcmp(currNode->operation,">"))
+    if(!strcmp(currNode->operation,"?") || !strcmp(currNode->operation,">>") || !strcmp(currNode->operation,"<<") || !strcmp(currNode->operation,"<") || !strcmp(currNode->operation,">")|| !strcmp(currNode->operation,"=="))
     {
         currNode->opType = 1;
     }
