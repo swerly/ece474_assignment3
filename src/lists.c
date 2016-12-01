@@ -8,7 +8,7 @@
 
 #include "lists.h"
 
-void addToList(varNode** list, varNode* varToAdd){
+void addToVarList(varNode** list, varNode* varToAdd){
     varNode* tNode = *list;
 
     //if our list is null, set the new variable as the head

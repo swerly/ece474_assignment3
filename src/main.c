@@ -30,7 +30,8 @@ int main(int argc, char** argv){
 
     //TODO: add inputs / outputs as wires/variables (I think?)
 
-    //TODO: parse program code
+    //TODO: parse program code (if/else needs to be handled but otherwise it should be done)
+    //TODO: code for linking opnodes should occur here (call a new function outside of parsing)
 
     //TODO: append program code to verilog file
 

@@ -11,6 +11,8 @@
 
 #define LINE_SIZE 80
 
+varNode* findVariable(varNode** variableList, char* token);
+
 void beginParsing(mainContainer* container){
     //const int LINE_SIZE = 80;
     FILE* netlistIn;
@@ -26,6 +28,7 @@ void beginParsing(mainContainer* container){
         printf("\nFile \"%s\" not found. Exiting...\n\n", container->inputFilename);
         return;
     }
+
     //start scanning line by line
     while( fgets(currentLine, LINE_SIZE, netlistIn)) {
 
@@ -61,13 +64,17 @@ void beginParsing(mainContainer* container){
                 parseVariables(&(container->variables), OUTPUT);
             } else if (strcmp(token, VARIABLE_STRING) == 0) {
                 parseVariables(&(container->variables), VARIABLE);
-            } else {
+            }
+            else
+            {
                 //parsing c code
+                parseBody(&(container->variables),&(container->operations), token);
             }
 
             token = strtok(NULL, " \t\n");
         }
     }
+
 }
 
 int getWidth(char* token) {
@@ -121,4 +128,116 @@ void parseVariables(varNode** variableList, variableType type){
 
         token = strtok(NULL, " ,\t\n");
     }
+}
+
+void parseBody(varNode** variableList, operationNode** opList, char* token)
+{
+    operationNode* newOp;
+    char* token2;
+    if(strcmp(token,"if") != 0)
+    {
+        newOp = (operationNode*)malloc(sizeof(operationNode));
+        newOp->output = findVariable(variableList, token);
+        if(newOp->output == NULL)
+        {
+            printf("output not found, output file will not compile");
+            *token = NULL;
+            return;
+        }
+        token2 = strtok(NULL, " ,\t\n");
+        token2 = strtok(NULL, " ,\t\n");
+        newOp->input1 = findVariable(variableList, token2);
+        if(newOp->input1 == NULL)
+        {
+            printf("variable not found, output file will not compile");
+            *token = NULL;
+            return;
+        }
+        token2 = strtok(NULL, " ,\t\n");
+        newOp->operation = token2;
+
+        setOpType(newOp);
+        if(newOp->opType == -1)
+        {
+            printf("invalid operation, outputfile will not compile");
+            *token = NULL;
+            return;
+        }
+
+        if (strcmp(newOp->operation,"?") == 0)
+        {
+            token2 = strtok(NULL, " ,\t\n");
+            newOp->input2 = findVariable(variableList, token2);
+            if(newOp->input2 == NULL)
+            {
+                printf("variable not found, output file will not compile");
+                *token = NULL;
+                return;
+            }
+            token2 = strtok(NULL, " ,\t\n");
+            newOp->input3 = findVariable(variableList, token2);
+            if(newOp->input3 == NULL)
+            {
+                printf("variable not found, output file will not compile");
+                *token = NULL;
+                return;
+            }
+        }
+        else
+        {
+            token2 = strtok(NULL, " ,\t\n");
+            newOp->input2 = findVariable(variableList, token2);
+            if(newOp->input2 == NULL)
+            {
+                printf("variable not found, output file will not compile");
+                *token = NULL;
+                return;
+            }
+            newOp->input3 = NULL;
+        }
+    }
+    else
+    {
+        //if statement parsing
+    }
+    return;
+}
+
+varNode* findVariable(varNode** variableList, char* token)
+{
+    varNode* currNode = *variableList;
+    while(currNode->next != NULL)
+    {
+        if(strcmp(token,currNode->name) == 0)
+        {
+            return currNode;
+        }
+        else
+        {
+            currNode=currNode->next;
+        }
+    }
+    return NULL;
+}
+
+void setOpType(operationNode* currNode)
+{
+    if(!strcmp(currNode->operation,"?") || !strcmp(currNode->operation,">>") || !strcmp(currNode->operation,"<<") || !strcmp(currNode->operation,"<") || !strcmp(currNode->operation,">"))
+    {
+        currNode->opType = 1;
+    }
+    else if(!strcmp(currNode->operation,"+") || !strcmp(currNode->operation,"-"))
+    {
+        currNode->opType = 0;
+    }
+    else if(!strcmp(currNode->operation,"*"))
+    {
+        currNode->opType = 2;
+    }
+    else
+    {
+        currNode->opType = -1;
+    }
+
+    return;
 }

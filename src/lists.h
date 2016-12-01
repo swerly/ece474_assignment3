@@ -17,8 +17,8 @@ typedef struct node{
 } varNode;
 
 typedef struct opNode{
-    char operation;
-	char* printstr;
+    char* operation;                    //holds the string that represents the operation cant just be a char because >> exists
+	char* printstr;                     //left in for now, probably not gonna stay
 	varNode* input1;
 	varNode* input2;
 	varNode* input3;
@@ -41,7 +41,7 @@ typedef struct{
     varNode* variables;
 	operationNode* operations;
     char inputFilename[30];
-	operationArrayNode* operationNodes;
+	//operationArrayNode* operationNodes;
 	int maxLatency;
 } mainContainer;
 
