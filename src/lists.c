@@ -75,3 +75,19 @@ void printList(varNode* head) {
         tNode = tNode->next;
     }
 }
+
+void initOpNode(operationNode* newNode)
+{
+    newNode->operation = NULL;
+    newNode->opType = -1;
+    newNode->ALAPcycle = -1;
+    newNode->ListRcycle = -1;
+    newNode->dependencies = NULL;
+    newNode->dependents = NULL;
+    newNode->input1 = NULL;
+    newNode->input2 = NULL;
+    newNode->input3 = NULL;
+    newNode->output = NULL;
+    newNode->next = NULL;
+    newNode->printstr = NULL;
+}

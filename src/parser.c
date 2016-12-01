@@ -137,6 +137,7 @@ void parseBody(varNode** variableList, operationNode** opList, char* token)
     if(strcmp(token,"if") != 0)
     {
         newOp = (operationNode*)malloc(sizeof(operationNode));
+        initOpNode(newOp);
         newOp->output = findVariable(variableList, token);
         if(newOp->output == NULL)
         {
@@ -154,7 +155,8 @@ void parseBody(varNode** variableList, operationNode** opList, char* token)
             return;
         }
         token2 = strtok(NULL, " ,\t\n");
-        newOp->operation = token2;
+        newOp->operation = (char*)malloc(sizeof(char)*strlen(token2));
+        strcpy(newOp->operation,token2);
 
         setOpType(newOp);
         if(newOp->opType == -1)

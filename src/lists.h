@@ -48,6 +48,7 @@ typedef struct{
 
 void addToVarList(varNode** list, varNode* varToAdd);
 void addToOpList(operationNode** list, operationNode* opToAdd);
+void initOpNode(operationNode* newNode);
 void addToOpArrayList(operationArrayNode** list, operationArrayNode* nodeToAdd);
 void printList(varNode* head);
 #endif //ECE474_ASSIGNMENT3_LISTS_H

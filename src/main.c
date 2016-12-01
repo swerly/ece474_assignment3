@@ -7,6 +7,7 @@
 #include <string.h>
 #include "parser.h"
 #include "lists.h"
+#include "linkOperationNodes.h"
 
 int main(int argc, char** argv){
     mainContainer container;
@@ -23,6 +24,7 @@ int main(int argc, char** argv){
 
     printf("Starting Parsing...");
     beginParsing(&container);
+    linkOpNodes(&container);
 
     //TODO: start to write verilog file definition
 
