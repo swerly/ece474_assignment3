@@ -13,6 +13,10 @@
 
 void beginParsing(mainContainer* container);
 void parseVariables(varNode** variableList, variableType type);
+void parseBody(varNode** variableList, operationNode** opList, char* token, int* error);
+void setOpType(operationNode* currNode);
 int isDataType(char* token);
+
+varNode* findVariable(varNode** variableList, char* token);
 
 #endif //ECE474_ASSIGNMENT3_PARSER_H

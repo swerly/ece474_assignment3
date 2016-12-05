@@ -43,6 +43,7 @@ typedef struct{
     char inputFilename[30];
 	//operationArrayNode* operationNodes;
 	int maxLatency;
+    int errorCode;
 } mainContainer;
 
 

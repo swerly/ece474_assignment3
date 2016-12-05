@@ -11,8 +11,6 @@
 
 #define LINE_SIZE 80
 
-varNode* findVariable(varNode** variableList, char* token);
-
 void beginParsing(mainContainer* container){
     //const int LINE_SIZE = 80;
     FILE* netlistIn;
@@ -68,7 +66,11 @@ void beginParsing(mainContainer* container){
             else
             {
                 //parsing c code
-                parseBody(&(container->variables),&(container->operations), token);
+                parseBody(&(container->variables),&(container->operations), token, &(container->errorCode));
+                if(container->errorCode != 0)
+                {
+                    return;
+                }
             }
 
             token = strtok(NULL, " \t\n");
@@ -130,10 +132,13 @@ void parseVariables(varNode** variableList, variableType type){
     }
 }
 
-void parseBody(varNode** variableList, operationNode** opList, char* token)
+void parseBody(varNode** variableList, operationNode** opList, char* token, int* error)
 {
     operationNode* newOp;                                       //creates a temporary node to add to the list
     char* token2;                                               //replaces the token which needs to be passed in
+
+    newOp = NULL;
+
     if(strcmp(token,"if") != 0)
     {
         newOp = (operationNode*)malloc(sizeof(operationNode));  //allocates the memory for the new node
@@ -142,7 +147,8 @@ void parseBody(varNode** variableList, operationNode** opList, char* token)
         if(newOp->output == NULL)                               //if the output doesnt exist the function exits
         {
             printf("output not found, output file will not compile");
-            *token = NULL;
+            free(newOp);
+            *error = 100;
             return;
         }
         token2 = strtok(NULL, " ,\t\n");                        //advances the token to the next variable
@@ -151,7 +157,8 @@ void parseBody(varNode** variableList, operationNode** opList, char* token)
         if(newOp->input1 == NULL)
         {
             printf("variable not found, output file will not compile");
-            *token = NULL;
+            free(newOp);
+            *error = 101;
             return;
         }
         token2 = strtok(NULL, " ,\t\n");                        //retrieves the operation
@@ -161,8 +168,9 @@ void parseBody(varNode** variableList, operationNode** opList, char* token)
         setOpType(newOp);                                       //sets opType as it relates to scheduling
         if(newOp->opType == -1)                                 //makes sure the operation is valid
         {
-            printf("invalid operation, outputfile will not compile");
-            *token = NULL;
+            printf("invalid operation, output file will not compile");
+            free(newOp);
+            *error = 102;
             return;
         }
 
@@ -173,7 +181,8 @@ void parseBody(varNode** variableList, operationNode** opList, char* token)
             if(newOp->input2 == NULL)
             {
                 printf("variable not found, output file will not compile");
-                *token = NULL;
+                free(newOp);
+                *error = 101;
                 return;
             }
             token2 = strtok(NULL, " ,\t\n");
@@ -182,7 +191,8 @@ void parseBody(varNode** variableList, operationNode** opList, char* token)
             if(newOp->input3 == NULL)
             {
                 printf("variable not found, output file will not compile");
-                *token = NULL;
+                free(newOp);
+                *error = 101;
                 return;
             }
         }
@@ -193,7 +203,8 @@ void parseBody(varNode** variableList, operationNode** opList, char* token)
             if(newOp->input2 == NULL)
             {
                 printf("variable not found, output file will not compile");
-                *token = NULL;
+                free(newOp);
+                *error = 101;
                 return;
             }
             newOp->input3 = NULL;
@@ -203,7 +214,10 @@ void parseBody(varNode** variableList, operationNode** opList, char* token)
     {
         //if statement parsing
     }
-    addToOpList(opList,newOp);                                  //adds the operation to the oplist so it can be linked
+    if(newOp != NULL)
+    {
+        addToOpList(opList, newOp);                                  //adds the operation to the oplist so it can be linked
+    }
     return;
 }
 

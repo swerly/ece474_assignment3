@@ -13,6 +13,7 @@ int main(int argc, char** argv){
     mainContainer container;
     container.variables = NULL;
     container.operations = NULL;
+    container.errorCode = 0;
 
     //check for correct argument count
     if (argc < 4){
@@ -24,8 +25,15 @@ int main(int argc, char** argv){
 
     printf("Starting Parsing...");
     beginParsing(&container);
-    printf("Linking Operations...");
-    linkOpNodes(&container);
+    if(container.errorCode == 0)
+    {
+        printf("Linking Operations...");
+        linkOpNodes(&container);
+    }
+    else
+    {
+        return container.errorCode;
+    }
 
     //TODO: start to write verilog file definition
 
