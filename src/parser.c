@@ -132,20 +132,20 @@ void parseVariables(varNode** variableList, variableType type){
 
 void parseBody(varNode** variableList, operationNode** opList, char* token)
 {
-    operationNode* newOp;
-    char* token2;
+    operationNode* newOp;                                       //creates a temporary node to add to the list
+    char* token2;                                               //replaces the token which needs to be passed in
     if(strcmp(token,"if") != 0)
     {
-        newOp = (operationNode*)malloc(sizeof(operationNode));
-        initOpNode(newOp);
+        newOp = (operationNode*)malloc(sizeof(operationNode));  //allocates the memory for the new node
+        initOpNode(newOp);                                      //initializes all default values in the node
         newOp->output = findVariable(variableList, token);
-        if(newOp->output == NULL)
+        if(newOp->output == NULL)                               //if the output doesnt exist the function exits
         {
             printf("output not found, output file will not compile");
             *token = NULL;
             return;
         }
-        token2 = strtok(NULL, " ,\t\n");
+        token2 = strtok(NULL, " ,\t\n");                        //advances the token to the next variable
         token2 = strtok(NULL, " ,\t\n");
         newOp->input1 = findVariable(variableList, token2);
         if(newOp->input1 == NULL)
@@ -154,19 +154,19 @@ void parseBody(varNode** variableList, operationNode** opList, char* token)
             *token = NULL;
             return;
         }
-        token2 = strtok(NULL, " ,\t\n");
-        newOp->operation = (char*)malloc(sizeof(char)*strlen(token2));
-        strcpy(newOp->operation,token2);
+        token2 = strtok(NULL, " ,\t\n");                        //retrieves the operation
+        newOp->operation = (char*)malloc(sizeof(char)*strlen(token2));  //allocates memory for the operation string
+        strcpy(newOp->operation,token2);                        //assigns the operation string
 
-        setOpType(newOp);
-        if(newOp->opType == -1)
+        setOpType(newOp);                                       //sets opType as it relates to scheduling
+        if(newOp->opType == -1)                                 //makes sure the operation is valid
         {
             printf("invalid operation, outputfile will not compile");
             *token = NULL;
             return;
         }
 
-        if (strcmp(newOp->operation,"?") == 0)
+        if (strcmp(newOp->operation,"?") == 0)                  //branch based on if the statement is a mux or not
         {
             token2 = strtok(NULL, " ,\t\n");
             newOp->input2 = findVariable(variableList, token2);
@@ -178,7 +178,7 @@ void parseBody(varNode** variableList, operationNode** opList, char* token)
             }
             token2 = strtok(NULL, " ,\t\n");
             token2 = strtok(NULL, " ,\t\n");
-            newOp->input3 = findVariable(variableList, token2);
+            newOp->input3 = findVariable(variableList, token2); //retrieves the extra input variable for the mux
             if(newOp->input3 == NULL)
             {
                 printf("variable not found, output file will not compile");
@@ -187,7 +187,7 @@ void parseBody(varNode** variableList, operationNode** opList, char* token)
             }
         }
         else
-        {
+        {                                                       //parses the rest of the line of a non-mux op
             token2 = strtok(NULL, " ,\t\n");
             newOp->input2 = findVariable(variableList, token2);
             if(newOp->input2 == NULL)
@@ -203,7 +203,7 @@ void parseBody(varNode** variableList, operationNode** opList, char* token)
     {
         //if statement parsing
     }
-    addToOpList(opList,newOp);
+    addToOpList(opList,newOp);                                  //adds the operation to the oplist so it can be linked
     return;
 }
 

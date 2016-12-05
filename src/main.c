@@ -24,6 +24,7 @@ int main(int argc, char** argv){
 
     printf("Starting Parsing...");
     beginParsing(&container);
+    printf("Linking Operations...");
     linkOpNodes(&container);
 
     //TODO: start to write verilog file definition

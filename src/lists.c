@@ -40,7 +40,8 @@ void addToOpList(operationNode** list, operationNode* opToAdd)
     tOpNode->next = opToAdd;
 }
 
-void addToOpArrayList(operationArrayNode** list, operationArrayNode* nodeToAdd){
+void addToOpArrayList(operationArrayNode** list, operationArrayNode* nodeToAdd)
+{
     operationArrayNode* tNode = *list;
     if (tNode == NULL){
         *list = nodeToAdd;
