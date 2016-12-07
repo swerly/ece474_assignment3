@@ -9,7 +9,7 @@
 #include "parser.h"
 #include "lists.h"
 
-#define LINE_SIZE 80
+#define LINE_SIZE 180
 
 void beginParsing(mainContainer* container){
     //const int LINE_SIZE = 80;
@@ -24,7 +24,6 @@ void beginParsing(mainContainer* container){
     //check if our input can be found, if not exit
     if (netlistIn == NULL){
         printf("\nFile \"%s\" not found. Exiting...\n\n", container->inputFilename);
-        container->errorCode = 99;
         return;
     }
 
@@ -67,7 +66,7 @@ void beginParsing(mainContainer* container){
             else
             {
                 //parsing c code
-                parseBody(&(container->variables),&(container->operations), &(container->ifNodeList),token, &(container->errorCode));
+                parseBody(&(container->variables),&(container->operations), token, &(container->errorCode));
                 if(container->errorCode != 0)
                 {
                     return;
@@ -133,20 +132,14 @@ void parseVariables(varNode** variableList, variableType type){
     }
 }
 
-void parseBody(varNode** variableList, operationNode** opList, ifNodes** ifElseList, char* token, int* error)
+void parseBody(varNode** variableList, operationNode** opList, char* token, int* error)
 {
     operationNode* newOp;                                       //creates a temporary node to add to the list
     char* token2;                                               //replaces the token which needs to be passed in
-    ifNodes* newIfNode;
-    ifNodes* searchNode;
-    operationArrayNode* newOpArrayNodeOut;
-    operationArrayNode* newOpArrayNodeIn;
-
-    int thisisdumb = 0;
 
     newOp = NULL;
 
-    if(strcmp(token,"if") != 0 && strcmp(token,"else") != 0 && *token != '}')//strcmp(token,"}") != 0)
+    if(strcmp(token,"if") != 0)
     {
         newOp = (operationNode*)malloc(sizeof(operationNode));  //allocates the memory for the new node
         initOpNode(newOp);                                      //initializes all default values in the node
@@ -217,173 +210,13 @@ void parseBody(varNode** variableList, operationNode** opList, ifNodes** ifElseL
             newOp->input3 = NULL;
         }
     }
-    else if(strcmp(token,"if") == 0)
+    else
     {
-        //if-else statement parsing
-        newOp = (operationNode*)malloc(sizeof(operationNode));
-        token2 = strtok(NULL, " ,\t\n");
-        if(strcmp(token2,"(") != 0)//if statements must have an opening parentheses
-        {
-            printf("if statement syntax error, output file will not compile");
-            free(newOp);
-            *error = 103;
-            return;
-        }
-        token2 = strtok(NULL, " ,\t\n");
-        initOpNode(newOp);
-        newOp->input1 = findVariable(variableList,token2);
-
-        if(newOp->input1 == NULL)//boolean variable/input must exist
-        {
-            printf("variable not found, output file will not compile");
-            free(newOp);
-            *error = 101;
-            return;
-        }
-
-        newOp->operation = "==";
-        newOp->opType = 1;
-
-        token2 = strtok(NULL, " ,\t\n");
-        if(strcmp(token2,")") != 0)
-        {
-            printf("if statement syntax error, output file will not compile");
-            free(newOp);
-            *error = 103;
-            return;
-        }
-
-        token2 = strtok(NULL, " ,\t\n");
-        if(strcmp(token2,"{") != 0)
-        {
-            printf("if statement syntax error, output file will not compile");
-            free(newOp);
-            *error = 103;
-            return;
-        }
-        newIfNode = (ifNodes*)malloc(sizeof(ifNodes));
-        newIfNode->element = newOp;
-        newIfNode->open = 1;
-
-        addToIfNodeList(ifElseList, newIfNode);
-    }
-    else if(*token == '}')
-    {
-        searchNode = *ifElseList;
-        if(searchNode == NULL)
-        {
-            printf("if statement syntax error, output file will not compile");
-            free(newOp);
-            *error = 103;
-            return;
-        }
-        while(searchNode->next != NULL)
-        {
-            searchNode = searchNode->next;
-        }
-        while(searchNode->open != 1)
-        {
-            searchNode = searchNode->prev;
-        }
-
-        if(searchNode->open == 1)
-        {
-            searchNode->open = 0;
-        }
-        else
-        {
-            printf("if statement syntax error, output file will not compile");
-            free(newOp);
-            *error = 103;
-            return;
-        }
-    }
-    else if(!strcmp(token,"else"))
-    {
-        searchNode = *ifElseList;
-        if(searchNode == NULL)
-        {
-            printf("if statement syntax error, output file will not compile");
-            free(newOp);
-            *error = 103;
-            return;
-        }
-
-        while(searchNode->next != NULL)
-        {
-            searchNode = searchNode->next;
-        }
-
-        while(searchNode->prev != NULL || searchNode->open == 1)
-        {
-            if(searchNode->prev->open == 1)
-            {
-                searchNode->open = 1;
-                break;
-            }
-            searchNode = searchNode->prev;
-        }
-        if(searchNode->open == 0 && searchNode->next == NULL)
-        {
-            searchNode->open = 1;
-        }
-
-        token2 = strtok(NULL, " ,\t\n");
-        if(strcmp(token2,"{") != 0)//if statements must have an opening parentheses
-        {
-            printf("if statement syntax error, output file will not compile");
-            free(newOp);
-            *error = 103;
-            return;
-        }
-
+        //if statement parsing
     }
     if(newOp != NULL)
     {
-        addToOpList(opList, newOp);                                   //adds the operation to the oplist so it can be linked
-        if(*ifElseList != NULL)
-        {
-            searchNode = *ifElseList;
-            if(searchNode->next !=NULL)
-            {
-                while(searchNode->next != NULL && searchNode->next->open == 1)
-                {
-                    searchNode = searchNode->next;
-                }
-                if(searchNode->open == 1 && searchNode->element != newOp)
-                {
-                    newOpArrayNodeOut = (operationArrayNode*)malloc(sizeof(operationArrayNode));
-                    newOpArrayNodeIn = (operationArrayNode*)malloc(sizeof(operationArrayNode));
-                    newOpArrayNodeOut->element = newOp;
-                    newOpArrayNodeIn->element = searchNode->element;
-                    addToOpArrayList(&(searchNode->element->dependents),newOpArrayNodeOut);
-                    addToOpArrayList(&(newOp->dependencies),newOpArrayNodeIn);
-                }
-                else if(newOp->input2 == NULL)
-                {
-                    searchNode = searchNode->prev;
-                    newOpArrayNodeOut = (operationArrayNode*)malloc(sizeof(operationArrayNode));
-                    newOpArrayNodeIn = (operationArrayNode*)malloc(sizeof(operationArrayNode));
-                    newOpArrayNodeOut->element = newOp;
-                    newOpArrayNodeIn->element = searchNode->element;
-                    addToOpArrayList(&(searchNode->element->dependents),newOpArrayNodeOut);
-                    addToOpArrayList(&(newOp->dependencies),newOpArrayNodeIn);
-
-                }
-            }
-            else
-            {
-                if(searchNode->open == 1 && searchNode->element != newOp)
-                {
-                    newOpArrayNodeOut = (operationArrayNode*)malloc(sizeof(operationArrayNode));
-                    newOpArrayNodeIn = (operationArrayNode*)malloc(sizeof(operationArrayNode));
-                    newOpArrayNodeOut->element = newOp;
-                    newOpArrayNodeIn->element = searchNode->element;
-                    addToOpArrayList(&(searchNode->element->dependents),newOpArrayNodeOut);
-                    addToOpArrayList(&(newOp->dependencies),newOpArrayNodeIn);
-                }
-            }
-        }
+        addToOpList(opList, newOp);                                  //adds the operation to the oplist so it can be linked
     }
     return;
 }

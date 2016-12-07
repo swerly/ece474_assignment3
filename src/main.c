@@ -7,22 +7,31 @@
 #include <string.h>
 #include "parser.h"
 #include "lists.h"
+#include "scheduler.h"
 #include "linkOperationNodes.h"
+
+void printCycles(mainContainer* mCont);
 
 int main(int argc, char** argv){
     mainContainer container;
+    operationArrayNode* scheduledNodes[atoi(argv[2])];
+    int i;
+
     container.variables = NULL;
     container.operations = NULL;
     container.errorCode = 0;
-    container.ifNodeList = NULL;
 
     //check for correct argument count
-    if (argc < 4){
+    if (argc != 4){
         printf("\nUsage:\n\nhlsyn cFile latency verilogFile\n\n");
         return 0;
     }
-
+    container.maxLatency = atoi(argv[2]);
     strcpy(container.inputFilename, argv[1]);
+    container.scheduledNodes = scheduledNodes;
+    for (i = 0; i < container.maxLatency; i++){
+        container.scheduledNodes[i] = NULL;
+    }
 
     printf("Starting Parsing...");
     beginParsing(&container);
@@ -30,24 +39,33 @@ int main(int argc, char** argv){
     {
         printf("Linking Operations...");
         linkOpNodes(&container);
+        printf(" Done\nLinking Operations...");
+        linkOpNodes(&container);
+        printf(" Done\nScheduling Operations...\n");
+        if(startListR(&container)==-1)return 0;
+        printCycles(&container);
+        printf(" Done\n");
     }
     else
     {
         return container.errorCode;
     }
 
-    //TODO: start to write verilog file definition
-
-    //TODO: parse inputs / outputs
-
-    //TODO: add inputs / outputs as wires/variables (I think?)
-
-    //TODO: parse program code (if/else needs to be handled but otherwise it should be done)
-    //TODO: code for linking opnodes should occur here (call a new function outside of parsing)
-
-    //TODO: append program code to verilog file
-
-    //TODO: compute scheduling using LIST_R
-    //printList(container.variables);
     return 0;
+}
+
+void printCycles(mainContainer* mCont){
+    operationArrayNode* temp;
+    int i;
+
+    for (i = 0; i<mCont->maxLatency; i++){
+        printf("\ncycle %d: ", i+1);
+        temp = mCont->scheduledNodes[i];
+        while (temp!=NULL){
+            printf("%s, ", temp->element->output->name);
+
+            temp=temp->next;
+        }
+    }
+    printf("\n\n");
 }

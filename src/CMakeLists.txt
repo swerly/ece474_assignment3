@@ -18,4 +18,4 @@ file( GLOB SRCS *.c *.h )
 # Define the target application executable (named spacer) and the list of C source
 # and header files needed for the executable.
 
-add_executable( hlsyn ${SRCS} linkOperationNodes.h linkOperationNodes.c)
+add_executable( hlsyn ${SRCS})

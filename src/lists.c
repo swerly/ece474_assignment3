@@ -8,6 +8,7 @@
 
 #include "lists.h"
 
+
 void addToVarList(varNode** list, varNode* varToAdd){
     varNode* tNode = *list;
 
@@ -53,56 +54,25 @@ void addToOpArrayList(operationArrayNode** list, operationArrayNode* nodeToAdd)
     tNode->next = nodeToAdd;
 }
 
-void addToIfNodeList(ifNodes** list, ifNodes* nodeToAdd)
+void addToSlackList(slackNode** list, slackNode* nodeToAdd)
 {
-    ifNodes* tNode1 = *list;
-    ifNodes* tNode2 = *list;
-    if(tNode1 == NULL)
-    {
+    slackNode* tNode = *list;
+    if (tNode == NULL){
         *list = nodeToAdd;
         return;
     }
-
-    while (tNode1->next != NULL)
-    {
-        tNode1 = tNode1->next;
-        tNode2 = tNode1;
-    }
-    tNode1->next = nodeToAdd;
-    nodeToAdd->prev = tNode2;
-
-}
-
-//prints the list starting at the header
-void printList(varNode* head) {
-    varNode* tNode = head;
-    char type[10];
-
-    while (tNode != NULL) {
-        switch(tNode->varType){
-            case INPUT:
-                strcpy(type, "INPUT\t");
-                break;
-            case OUTPUT:
-                strcpy(type, "OUTPUT\t");
-                break;
-            case VARIABLE:
-                strcpy(type, "VARIABLE");
-                break;
-            default:
-                break;
-        }
-        printf("\n    %s\t%d\t%s\t%s", tNode->name, tNode->width, type, tNode->isSigned ? "Signed" : "Unsigned");
+    while (tNode->next != NULL){
         tNode = tNode->next;
     }
+    tNode->next = nodeToAdd;
 }
 
 void initOpNode(operationNode* newNode)
 {
     newNode->operation = NULL;
     newNode->opType = -1;
-    newNode->ALAPcycle = -1;
-    newNode->ListRcycle = -1;
+    newNode->alapCycle = -1;
+    newNode->listRCycle = -1;
     newNode->dependencies = NULL;
     newNode->dependents = NULL;
     newNode->input1 = NULL;
@@ -111,5 +81,30 @@ void initOpNode(operationNode* newNode)
     newNode->output = NULL;
     newNode->next = NULL;
     newNode->printstr = NULL;
-    //newNode->ifElseNode = 0;
+}
+
+void addOpToSchedule(operationArrayNode** list, operationNode* nodeToAdd){
+    operationArrayNode* tNode = *list, *add;
+
+    add = (operationArrayNode*)malloc(sizeof(operationArrayNode));
+    add->element = nodeToAdd;
+    add->next = NULL;
+
+    if (tNode == NULL){
+        *list = add;
+        return;
+    }
+    while (tNode->next != NULL){
+        tNode = tNode->next;
+    }
+    tNode->next = add;
+}
+
+void freeOpArrayNodeList(operationArrayNode* head){
+    operationArrayNode* temp;
+    while (head!=NULL){
+        temp = head->next;
+        free(head);
+        head = temp;
+    }
 }

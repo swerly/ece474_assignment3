@@ -13,7 +13,7 @@
 
 void beginParsing(mainContainer* container);
 void parseVariables(varNode** variableList, variableType type);
-void parseBody(varNode** variableList, operationNode** opList, ifNodes** ifElseList, char* token, int* error);
+void parseBody(varNode** variableList, operationNode** opList, char* token, int* error);
 void setOpType(operationNode* currNode);
 int isDataType(char* token);
 

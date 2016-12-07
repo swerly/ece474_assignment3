@@ -25,10 +25,9 @@ typedef struct opNode{
     varNode* output;
     struct opArrayNode* dependents;
     struct opArrayNode* dependencies;
-    int ALAPcycle;
-    int ListRcycle;
+    int alapCycle;
+    int listRCycle;
 	int opType; 						//corresponds to 0-2 where 0 is add/sub, 1 is logic, 2 is mult
-
     struct opNode* next;
 } operationNode;
 
@@ -37,14 +36,11 @@ typedef struct opArrayNode{
     struct opArrayNode* next;
 } operationArrayNode;
 
-typedef struct ifNodes
-{
-    operationNode* element;
-    int open;
-    struct opNode* dependents;
-    struct ifNodes* next;
-    struct ifNodes* prev;
-} ifNodes;
+typedef struct slNode{
+    int slack;
+    struct opArrayNode* element;
+    struct slNode* next;
+}slackNode;
 
 //structure to hold all of our lists to pass easily between functions
 typedef struct{
@@ -54,8 +50,7 @@ typedef struct{
 	//operationArrayNode* operationNodes;
 	int maxLatency;
     int errorCode;
-
-    struct ifNodes* ifNodeList;
+    operationArrayNode** scheduledNodes;
 } mainContainer;
 
 
@@ -63,6 +58,8 @@ void addToVarList(varNode** list, varNode* varToAdd);
 void addToOpList(operationNode** list, operationNode* opToAdd);
 void initOpNode(operationNode* newNode);
 void addToOpArrayList(operationArrayNode** list, operationArrayNode* nodeToAdd);
-void addToIfNodeList(ifNodes** list, ifNodes* nodeToAdd);
+void addToSlackList(slackNode** list, slackNode* nodeToAdd);
 void printList(varNode* head);
+void freeOpArrayNodeList(operationArrayNode* head);
+void addOpToSchedule(operationArrayNode** list, operationNode* nodeToAdd);
 #endif //ECE474_ASSIGNMENT3_LISTS_H

@@ -24,50 +24,39 @@ void linkOpNodes(mainContainer* container)
 
     while(currOpNode != NULL)
     {
-        if(currOpNode->input1->varType == INPUT && currOpNode->input2 == NULL && currOpNode->output == NULL)
-        {
-            currOpNode = currOpNode->next;
-        }
         if(currOpNode->input1->varType == VARIABLE || currOpNode->input2->varType == VARIABLE || currOpNode->input3 != NULL)
-        {//checks to see if the node's inputs come from other nodes and cause dependencies and runs anyway if the node is a mux
+        {
             while(searchNode != NULL && searchNode != currOpNode)//loop assumes that all dependencies have to come before the current node
             {
-                if(searchNode->input2 != NULL && searchNode->output != NULL)
-                {
-                    if (!strcmp(searchNode->output->name, currOpNode->input1->name) && found1 == 0)
-                    {//if the output of a node matches the input of the current node and the node input hasnt been found yet
-                        newOpArrayNodeIn = (operationArrayNode *) malloc(sizeof(operationArrayNode));//allocates memories for the new nodes
-                        newOpArrayNodeOut = (operationArrayNode *) malloc(sizeof(operationArrayNode));
-                        newOpArrayNodeIn->element = searchNode;  //assigns the nodes to the new opArray nodes
-                        newOpArrayNodeOut->element = currOpNode;
-                        addToOpArrayList(&currOpNode->dependencies, newOpArrayNodeIn);   //adds the new oparraynodes
-                        addToOpArrayList(&searchNode->dependents, newOpArrayNodeOut);
-                        found1 = 1; //sets the found flag
-                    }
-                    else if (currOpNode->input2 != NULL && !strcmp(searchNode->output->name, currOpNode->input2->name) && found2 == 0)
-                    {//this is an else if to avoid the same node being linked twice
-                        newOpArrayNodeIn = (operationArrayNode *) malloc(sizeof(operationArrayNode));
-                        newOpArrayNodeOut = (operationArrayNode *) malloc(sizeof(operationArrayNode));
-                        newOpArrayNodeIn->element = searchNode;
-                        newOpArrayNodeOut->element = currOpNode;
-                        addToOpArrayList(&currOpNode->dependencies, newOpArrayNodeIn);
-                        addToOpArrayList(&searchNode->dependents, newOpArrayNodeOut);
-                        found2 = 1;
-                    }
-                    else if (currOpNode->input2 != NULL && strcmp(currOpNode->operation, "?") == 0 && !strcmp(searchNode->output->name, currOpNode->input3->name) && found3 == 0)
-                    {//links the last input if the op is a mux
-                        newOpArrayNodeIn = (operationArrayNode *) malloc(sizeof(operationArrayNode));
-                        newOpArrayNodeOut = (operationArrayNode *) malloc(sizeof(operationArrayNode));
-                        newOpArrayNodeIn->element = searchNode;
-                        newOpArrayNodeOut->element = currOpNode;
-                        addToOpArrayList(&currOpNode->dependencies, newOpArrayNodeIn);
-                        addToOpArrayList(&searchNode->dependents, newOpArrayNodeOut);
-                        found3 = 1;
-                    }
-                    if(*(currOpNode->operation) != '?' && found1 && found2)
-                    {
-                        break;
-                    }
+                if(!strcmp(searchNode->output->name,currOpNode->input1->name) && found1 == 0)
+                {//if the output of a node matches the input of the current node and the node input hasnt been found yet
+                    newOpArrayNodeIn = (operationArrayNode*)malloc(sizeof(operationArrayNode));//allocates memories for the new nodes
+                    newOpArrayNodeOut = (operationArrayNode*)malloc(sizeof(operationArrayNode));
+                    newOpArrayNodeIn->element = searchNode;  //assigns the nodes to the new opArray nodes
+                    newOpArrayNodeOut->element = currOpNode;
+                    addToOpArrayList(&currOpNode->dependencies,newOpArrayNodeIn);   //adds the new oparraynodes
+                    addToOpArrayList(&searchNode->dependents, newOpArrayNodeOut);
+                    found1 = 1; //sets the found flag
+                }
+                else if(!strcmp(searchNode->output->name,currOpNode->input2->name) && found2 == 0)
+                {//this is an else if to avoid the same node being linked twice
+                    newOpArrayNodeIn = (operationArrayNode*)malloc(sizeof(operationArrayNode));
+                    newOpArrayNodeOut = (operationArrayNode*)malloc(sizeof(operationArrayNode));
+                    newOpArrayNodeIn->element = searchNode;
+                    newOpArrayNodeOut->element = currOpNode;
+                    addToOpArrayList(&currOpNode->dependencies,newOpArrayNodeIn);
+                    addToOpArrayList(&searchNode->dependents, newOpArrayNodeOut);
+                    found2 = 1;
+                }
+                else if(strcmp(currOpNode->operation,"?") == 0 && !strcmp(searchNode->output->name,currOpNode->input3->name) && found3 == 0)
+                {//links the last input if the op is a mux
+                    newOpArrayNodeIn = (operationArrayNode*)malloc(sizeof(operationArrayNode));
+                    newOpArrayNodeOut = (operationArrayNode*)malloc(sizeof(operationArrayNode));
+                    newOpArrayNodeIn->element = searchNode;
+                    newOpArrayNodeOut->element = currOpNode;
+                    addToOpArrayList(&currOpNode->dependencies,newOpArrayNodeIn);
+                    addToOpArrayList(&searchNode->dependents, newOpArrayNodeOut);
+                    found3 = 1;
                 }
                 searchNode = searchNode->next;
             }
