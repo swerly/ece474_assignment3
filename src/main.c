@@ -41,7 +41,7 @@ int main(int argc, char** argv){
         printf("Linking Operations...");
         linkOpNodes(&container);
         printf(" Done\nLinking Operations...");
-        linkOpNodes(&container);
+//        linkOpNodes(&container);
         printf(" Done\nScheduling Operations...\n");
         if(startListR(&container)==-1)return 0;
         printCycles(&container);
