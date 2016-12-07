@@ -36,6 +36,15 @@ typedef struct opArrayNode{
     struct opArrayNode* next;
 } operationArrayNode;
 
+typedef struct ifNodes
+{
+    operationNode* element;
+    int open;
+    struct opNode* dependents;
+    struct ifNodes* next;
+    struct ifNodes* prev;
+} ifNodes;
+
 typedef struct slNode{
     int slack;
     struct opArrayNode* element;
@@ -51,6 +60,7 @@ typedef struct{
 	int maxLatency;
     int errorCode;
     operationArrayNode** scheduledNodes;
+    struct ifNodes* ifNodeList;
 } mainContainer;
 
 
@@ -58,6 +68,7 @@ void addToVarList(varNode** list, varNode* varToAdd);
 void addToOpList(operationNode** list, operationNode* opToAdd);
 void initOpNode(operationNode* newNode);
 void addToOpArrayList(operationArrayNode** list, operationArrayNode* nodeToAdd);
+void addToIfNodeList(ifNodes** list, ifNodes* nodeToAdd);
 void addToSlackList(slackNode** list, slackNode* nodeToAdd);
 void printList(varNode* head);
 void freeOpArrayNodeList(operationArrayNode* head);

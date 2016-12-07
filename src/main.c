@@ -19,6 +19,7 @@ int main(int argc, char** argv){
 
     container.variables = NULL;
     container.operations = NULL;
+    container.ifNodeList = NULL;
     container.errorCode = 0;
 
     //check for correct argument count
