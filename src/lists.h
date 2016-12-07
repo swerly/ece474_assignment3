@@ -28,6 +28,7 @@ typedef struct opNode{
     int ALAPcycle;
     int ListRcycle;
 	int opType; 						//corresponds to 0-2 where 0 is add/sub, 1 is logic, 2 is mult
+
     struct opNode* next;
 } operationNode;
 
@@ -35,6 +36,15 @@ typedef struct opArrayNode{
     operationNode * element;
     struct opArrayNode* next;
 } operationArrayNode;
+
+typedef struct ifNodes
+{
+    operationNode* element;
+    int open;
+    struct opNode* dependents;
+    struct ifNodes* next;
+    struct ifNodes* prev;
+} ifNodes;
 
 //structure to hold all of our lists to pass easily between functions
 typedef struct{
@@ -44,6 +54,8 @@ typedef struct{
 	//operationArrayNode* operationNodes;
 	int maxLatency;
     int errorCode;
+
+    struct ifNodes* ifNodeList;
 } mainContainer;
 
 
@@ -51,5 +63,6 @@ void addToVarList(varNode** list, varNode* varToAdd);
 void addToOpList(operationNode** list, operationNode* opToAdd);
 void initOpNode(operationNode* newNode);
 void addToOpArrayList(operationArrayNode** list, operationArrayNode* nodeToAdd);
+void addToIfNodeList(ifNodes** list, ifNodes* nodeToAdd);
 void printList(varNode* head);
 #endif //ECE474_ASSIGNMENT3_LISTS_H

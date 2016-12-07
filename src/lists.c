@@ -53,6 +53,26 @@ void addToOpArrayList(operationArrayNode** list, operationArrayNode* nodeToAdd)
     tNode->next = nodeToAdd;
 }
 
+void addToIfNodeList(ifNodes** list, ifNodes* nodeToAdd)
+{
+    ifNodes* tNode1 = *list;
+    ifNodes* tNode2 = *list;
+    if(tNode1 == NULL)
+    {
+        *list = nodeToAdd;
+        return;
+    }
+
+    while (tNode1->next != NULL)
+    {
+        tNode1 = tNode1->next;
+        tNode2 = tNode1;
+    }
+    tNode1->next = nodeToAdd;
+    nodeToAdd->prev = tNode2;
+
+}
+
 //prints the list starting at the header
 void printList(varNode* head) {
     varNode* tNode = head;
@@ -91,4 +111,5 @@ void initOpNode(operationNode* newNode)
     newNode->output = NULL;
     newNode->next = NULL;
     newNode->printstr = NULL;
+    //newNode->ifElseNode = 0;
 }

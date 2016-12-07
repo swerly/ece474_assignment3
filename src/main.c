@@ -14,6 +14,7 @@ int main(int argc, char** argv){
     container.variables = NULL;
     container.operations = NULL;
     container.errorCode = 0;
+    container.ifNodeList = NULL;
 
     //check for correct argument count
     if (argc < 4){
