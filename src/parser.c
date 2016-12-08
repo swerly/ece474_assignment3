@@ -67,6 +67,12 @@ void beginParsing(mainContainer* container){
             else
             {
                 //parsing c code
+                if(strcmp(token, "if") == 0)
+                {
+                    container->errorCode = 98;
+                    printf("cannot complete if statement parsing");
+                    return;
+                }
                 parseBody(&(container->variables),&(container->operations), &(container->ifNodeList),token, &(container->errorCode));
                 if(container->errorCode != 0)
                 {
@@ -266,6 +272,7 @@ void parseBody(varNode** variableList, operationNode** opList, ifNodes** ifElseL
         newIfNode->open = 1;
 
         addToIfNodeList(ifElseList, newIfNode);
+
     }
     else if(*token == '}')
     {
@@ -289,6 +296,10 @@ void parseBody(varNode** variableList, operationNode** opList, ifNodes** ifElseL
         if(searchNode->open == 1)
         {
             searchNode->open = 0;
+/*            if(searchNode->underElse == 1)
+            {
+                searchNode->underElse = 0;
+            }*/
         }
         else
         {
@@ -319,6 +330,7 @@ void parseBody(varNode** variableList, operationNode** opList, ifNodes** ifElseL
             if(searchNode->prev->open == 1)
             {
                 searchNode->open = 1;
+//                searchNode->underElse = 1;
                 break;
             }
             searchNode = searchNode->prev;
@@ -326,6 +338,7 @@ void parseBody(varNode** variableList, operationNode** opList, ifNodes** ifElseL
         if(searchNode->open == 0 && searchNode->next == NULL)
         {
             searchNode->open = 1;
+//            searchNode->underElse = 1;
         }
 
         token2 = strtok(NULL, " ,\t\n");
@@ -358,6 +371,10 @@ void parseBody(varNode** variableList, operationNode** opList, ifNodes** ifElseL
                     newOpArrayNodeIn->element = searchNode->element;
                     addToOpArrayList(&(searchNode->element->dependents),newOpArrayNodeOut);
                     addToOpArrayList(&(newOp->dependencies),newOpArrayNodeIn);
+/*                    if(searchNode->underElse == 1)
+                    {
+                        newOp->underElse = 1;
+                    }*/
                 }
                 else if(newOp->input2 == NULL)
                 {
@@ -368,7 +385,10 @@ void parseBody(varNode** variableList, operationNode** opList, ifNodes** ifElseL
                     newOpArrayNodeIn->element = searchNode->element;
                     addToOpArrayList(&(searchNode->element->dependents),newOpArrayNodeOut);
                     addToOpArrayList(&(newOp->dependencies),newOpArrayNodeIn);
-
+/*                    if(searchNode->underElse == 1)
+                    {
+                        newOp->underElse = 1;
+                    }*/
                 }
             }
             else
@@ -381,6 +401,10 @@ void parseBody(varNode** variableList, operationNode** opList, ifNodes** ifElseL
                     newOpArrayNodeIn->element = searchNode->element;
                     addToOpArrayList(&(searchNode->element->dependents),newOpArrayNodeOut);
                     addToOpArrayList(&(newOp->dependencies),newOpArrayNodeIn);
+/*                    if(searchNode->underElse == 1)
+                    {
+                        newOp->underElse = 1;
+                    }*/
                 }
             }
         }
