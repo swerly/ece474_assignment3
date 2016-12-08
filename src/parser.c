@@ -159,7 +159,7 @@ void parseBody(varNode** variableList, operationNode** opList, ifNodes** ifElseL
         newOp->output = findVariable(variableList, token);
         if(newOp->output == NULL)                               //if the output doesnt exist the function exits
         {
-            printf("output not found, output file will not compile");
+            printf("Output variable does not exist, file will not compile");
             free(newOp);
             *error = 100;
             return;
@@ -169,7 +169,7 @@ void parseBody(varNode** variableList, operationNode** opList, ifNodes** ifElseL
         newOp->input1 = findVariable(variableList, token2);
         if(newOp->input1 == NULL)
         {
-            printf("variable not found, output file will not compile");
+            printf("First Input not found, output file will not compile");
             free(newOp);
             *error = 101;
             return;
@@ -193,7 +193,7 @@ void parseBody(varNode** variableList, operationNode** opList, ifNodes** ifElseL
             newOp->input2 = findVariable(variableList, token2);
             if(newOp->input2 == NULL)
             {
-                printf("variable not found, output file will not compile");
+                printf("Second Input (Invalid Mux) not found, output file will not compile");
                 free(newOp);
                 *error = 101;
                 return;
@@ -203,7 +203,7 @@ void parseBody(varNode** variableList, operationNode** opList, ifNodes** ifElseL
             newOp->input3 = findVariable(variableList, token2); //retrieves the extra input variable for the mux
             if(newOp->input3 == NULL)
             {
-                printf("variable not found, output file will not compile");
+                printf("Third Input (Invalid Mux) not found, output file will not compile");
                 free(newOp);
                 *error = 101;
                 return;
@@ -215,7 +215,7 @@ void parseBody(varNode** variableList, operationNode** opList, ifNodes** ifElseL
             newOp->input2 = findVariable(variableList, token2);
             if(newOp->input2 == NULL)
             {
-                printf("variable not found, output file will not compile");
+                printf("Second Input not found, output file will not compile");
                 free(newOp);
                 *error = 101;
                 return;
