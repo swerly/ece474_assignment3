@@ -30,7 +30,7 @@ int startListR(mainContainer* mContainer) {
 
     //set ALAP time
     if (!setALAP(mContainer)){
-        printf("\n\nALAP FAILED SCHEDULING IS BROKEN\n\n");
+        printf("\nCOULD NOT SCHEDULE ALL NODES WITHIN LATENCY CONSTRAINT\n");
         return -1;
     }
 

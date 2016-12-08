@@ -10,7 +10,7 @@
 # CMake projects are forward compatible, but may not be backwards compatible. This
 # commands defines the version of CMake used for the current setup.
 
-cmake_minimum_required(VERSION 3.6)
+cmake_minimum_required(VERSION 2.6)
 
 # Define the project name. 
 

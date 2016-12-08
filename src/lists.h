@@ -56,6 +56,7 @@ typedef struct{
     varNode* variables;
 	operationNode* operations;
     char inputFilename[30];
+    char* outputFilename;
 	//operationArrayNode* operationNodes;
 	int maxLatency;
     int errorCode;
