@@ -70,7 +70,7 @@ void beginParsing(mainContainer* container){
                 if(strcmp(token, "if") == 0)
                 {
                     container->errorCode = 98;
-                    printf("cannot complete if statement parsing");
+                    printf("Our program is not able to correctly schedule if statements, exiting...\n");
                     return;
                 }
                 parseBody(&(container->variables),&(container->operations), &(container->ifNodeList),token, &(container->errorCode));
@@ -159,7 +159,7 @@ void parseBody(varNode** variableList, operationNode** opList, ifNodes** ifElseL
         newOp->output = findVariable(variableList, token);
         if(newOp->output == NULL)                               //if the output doesnt exist the function exits
         {
-            printf("Output variable does not exist, file will not compile");
+            printf("Output %s does not exist, file will not compile\n", token);
             free(newOp);
             *error = 100;
             return;
@@ -169,7 +169,7 @@ void parseBody(varNode** variableList, operationNode** opList, ifNodes** ifElseL
         newOp->input1 = findVariable(variableList, token2);
         if(newOp->input1 == NULL)
         {
-            printf("First Input not found, output file will not compile");
+            printf("Input %s not found, output file will not compile\n", token2);
             free(newOp);
             *error = 101;
             return;
@@ -181,7 +181,7 @@ void parseBody(varNode** variableList, operationNode** opList, ifNodes** ifElseL
         setOpType(newOp);                                       //sets opType as it relates to scheduling
         if(newOp->opType == -1)                                 //makes sure the operation is valid
         {
-            printf("invalid operation, output file will not compile");
+            printf("Invalid operation, output file will not compile\n");
             free(newOp);
             *error = 102;
             return;
@@ -193,7 +193,7 @@ void parseBody(varNode** variableList, operationNode** opList, ifNodes** ifElseL
             newOp->input2 = findVariable(variableList, token2);
             if(newOp->input2 == NULL)
             {
-                printf("Second Input (Invalid Mux) not found, output file will not compile");
+                printf("Second Input %s (Invalid Mux) not found, output file will not compile\n", token2);
                 free(newOp);
                 *error = 101;
                 return;
@@ -203,7 +203,7 @@ void parseBody(varNode** variableList, operationNode** opList, ifNodes** ifElseL
             newOp->input3 = findVariable(variableList, token2); //retrieves the extra input variable for the mux
             if(newOp->input3 == NULL)
             {
-                printf("Third Input (Invalid Mux) not found, output file will not compile");
+                printf("Third Input %s (Invalid Mux) not found, output file will not compile\n", token2);
                 free(newOp);
                 *error = 101;
                 return;
@@ -215,7 +215,7 @@ void parseBody(varNode** variableList, operationNode** opList, ifNodes** ifElseL
             newOp->input2 = findVariable(variableList, token2);
             if(newOp->input2 == NULL)
             {
-                printf("Second Input not found, output file will not compile");
+                printf("Second Input %s not found, output file will not compile\n", token2);
                 free(newOp);
                 *error = 101;
                 return;
@@ -230,7 +230,7 @@ void parseBody(varNode** variableList, operationNode** opList, ifNodes** ifElseL
         token2 = strtok(NULL, " ,\t\n");
         if(strcmp(token2,"(") != 0)//if statements must have an opening parentheses
         {
-            printf("if statement syntax error, output file will not compile");
+            printf("if statement syntax error, output file will not compile\n");
             free(newOp);
             *error = 103;
             return;
@@ -241,7 +241,7 @@ void parseBody(varNode** variableList, operationNode** opList, ifNodes** ifElseL
 
         if(newOp->input1 == NULL)//boolean variable/input must exist
         {
-            printf("variable not found, output file will not compile");
+            printf("variable not found, output file will not compile\n");
             free(newOp);
             *error = 101;
             return;

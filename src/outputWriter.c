@@ -8,6 +8,7 @@
 #include "lists.h"
 
 int bitCount(unsigned int n);
+void printVars(mainContainer* mContainer, FILE* outp, variableType type);
 
 void writeFile(mainContainer *mContainer){
     FILE* outp = fopen(mContainer->outputFilename, "w");
@@ -15,7 +16,7 @@ void writeFile(mainContainer *mContainer){
     operationNode* tempOp;
     varNode* tempVar;
 
-    int curCycle = 0, i, j, printedVar = 0;
+    int i;
 
 
     if (outp == NULL){
