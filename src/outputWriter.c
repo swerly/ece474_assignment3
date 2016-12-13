@@ -18,6 +18,8 @@ void writeFile(mainContainer *mContainer){
 
     int i;
 
+    if (mContainer->printBlank){
+    }
 
     if (outp == NULL){
         printf("Couldn't open \"%s\" for writing", mContainer->outputFilename);
@@ -28,6 +30,34 @@ void writeFile(mainContainer *mContainer){
 
     //print header and module declaration
     fprintf(outp, "`timescale 1ns / 1ps\n\n");
+
+    if (mContainer->printBlank){
+        fprintf(outp, "//***************************ERROR***************************\n");
+        fprintf(outp, "//***********************************************************\n\n//");
+        switch (mContainer->errorCode){
+            case 69:
+                fprintf(outp, "Operations could not be schedule within the time constraint, printing blank schedule...", mContainer->maxLatency);
+                break;
+            case 98:
+                fprintf(outp, "We tried, but were not able to successfully schedule if statements");
+                break;
+            case 100:
+                fprintf(outp, "Output %s does not exist, printing blank schedule...", mContainer->errorCausingString);
+                break;
+            case 101:
+                fprintf(outp, "Input %s does not exist, printing blank schedule...", mContainer->errorCausingString);
+                break;
+            case 102:
+                fprintf(outp, "%s is an invalid operation, printing blank schedule...", mContainer->errorCausingString);
+                break;
+
+        }
+        fprintf(outp, "\n\n//***********************************************************\n");
+        fprintf(outp, "//***********************************************************\n\n");
+
+    }
+
+
     fprintf(outp, "module HLSM (Clk, Rst, Start, Done");
     tempVar = mContainer->variables;
     while (tempVar != NULL){
@@ -38,10 +68,11 @@ void writeFile(mainContainer *mContainer){
     }
     fprintf(outp, ");\n    input Clk, Rst, Start;\n    output reg Done;\n");
 
-    printVars(mContainer,outp,INPUT);
-    printVars(mContainer,outp,OUTPUT);
-    printVars(mContainer,outp,VARIABLE);
+    printVars(mContainer, outp, INPUT);
+    printVars(mContainer, outp, OUTPUT);
+    printVars(mContainer, outp, VARIABLE);
 
+    if (mContainer->printBlank) mContainer->maxLatency = 0;
     //get the bit width of the max cycles and
     i = bitCount(mContainer->maxLatency + 2);
     fprintf(outp, "\n    reg [0:%d] State, NextState;\n\n", i-1);

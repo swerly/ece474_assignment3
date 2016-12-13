@@ -73,7 +73,7 @@ void beginParsing(mainContainer* container){
                     printf("Our program is not able to correctly schedule if statements, exiting...\n");
                     return;
                 }
-                parseBody(&(container->variables),&(container->operations), &(container->ifNodeList),token, &(container->errorCode));
+                parseBody(&(container->variables),&(container->operations), &(container->ifNodeList),token, &(container->errorCode), container);
                 if(container->errorCode != 0)
                 {
                     return;
@@ -139,7 +139,7 @@ void parseVariables(varNode** variableList, variableType type){
     }
 }
 
-void parseBody(varNode** variableList, operationNode** opList, ifNodes** ifElseList, char* token, int* error)
+void parseBody(varNode** variableList, operationNode** opList, ifNodes** ifElseList, char* token, int* error, mainContainer* mContainer)
 {
     operationNode* newOp;                                       //creates a temporary node to add to the list
     char* token2;                                               //replaces the token which needs to be passed in
@@ -159,7 +159,8 @@ void parseBody(varNode** variableList, operationNode** opList, ifNodes** ifElseL
         newOp->output = findVariable(variableList, token);
         if(newOp->output == NULL)                               //if the output doesnt exist the function exits
         {
-            printf("Output %s does not exist, file will not compile\n", token);
+            //printf("Output %s does not exist, file will not compile\n", token);
+            strcpy(mContainer->errorCausingString, token);
             free(newOp);
             *error = 100;
             return;
@@ -169,7 +170,8 @@ void parseBody(varNode** variableList, operationNode** opList, ifNodes** ifElseL
         newOp->input1 = findVariable(variableList, token2);
         if(newOp->input1 == NULL)
         {
-            printf("Input %s not found, output file will not compile\n", token2);
+            //printf("Input %s not found, output file will not compile\n", token2);
+            strcpy(mContainer->errorCausingString, token2);
             free(newOp);
             *error = 101;
             return;
@@ -181,7 +183,8 @@ void parseBody(varNode** variableList, operationNode** opList, ifNodes** ifElseL
         setOpType(newOp);                                       //sets opType as it relates to scheduling
         if(newOp->opType == -1)                                 //makes sure the operation is valid
         {
-            printf("Invalid operation, output file will not compile\n");
+            //printf("Invalid operation, output file will not compile\n");
+            strcpy(mContainer->errorCausingString, token2);
             free(newOp);
             *error = 102;
             return;
@@ -193,8 +196,9 @@ void parseBody(varNode** variableList, operationNode** opList, ifNodes** ifElseL
             newOp->input2 = findVariable(variableList, token2);
             if(newOp->input2 == NULL)
             {
-                printf("Second Input %s (Invalid Mux) not found, output file will not compile\n", token2);
+                //printf("Second Input %s (Invalid Mux) not found, output file will not compile\n", token2);
                 free(newOp);
+                strcpy(mContainer->errorCausingString, token2);
                 *error = 101;
                 return;
             }
@@ -203,7 +207,8 @@ void parseBody(varNode** variableList, operationNode** opList, ifNodes** ifElseL
             newOp->input3 = findVariable(variableList, token2); //retrieves the extra input variable for the mux
             if(newOp->input3 == NULL)
             {
-                printf("Third Input %s (Invalid Mux) not found, output file will not compile\n", token2);
+                //printf("Third Input %s (Invalid Mux) not found, output file will not compile\n", token2);
+                strcpy(mContainer->errorCausingString, token2);
                 free(newOp);
                 *error = 101;
                 return;
@@ -215,7 +220,8 @@ void parseBody(varNode** variableList, operationNode** opList, ifNodes** ifElseL
             newOp->input2 = findVariable(variableList, token2);
             if(newOp->input2 == NULL)
             {
-                printf("Second Input %s not found, output file will not compile\n", token2);
+                //printf("Second Input %s not found, output file will not compile\n", token2);
+                strcpy(mContainer->errorCausingString, token2);
                 free(newOp);
                 *error = 101;
                 return;

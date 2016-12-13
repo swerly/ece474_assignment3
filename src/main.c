@@ -20,6 +20,7 @@ int main(int argc, char** argv){
     container.operations = NULL;
     container.ifNodeList = NULL;
     container.errorCode = 0;
+    container.printBlank = 0;
 
     //check for correct argument count
     if (argc != 4){
@@ -27,7 +28,7 @@ int main(int argc, char** argv){
         return 0;
     }
     container.maxLatency = atoi(argv[2]);
-    strcpy(container.inputFilename, argv[1]);
+    container.inputFilename = argv[1];
     container.outputFilename = argv[3];
     container.scheduledNodes = scheduledNodes;
     for (i = 0; i < container.maxLatency; i++){
@@ -39,13 +40,19 @@ int main(int argc, char** argv){
     {
         linkOpNodes(&container);
         linkOpNodes(&container);
-        if(startListR(&container)==-1)return 0;
+        if(startListR(&container)==-1){
+            container.errorCode = 69;
+            container.printBlank = 1;
+            writeFile(&container);
+        };
         //printCycles(&container);
         writeFile(&container);
-    }
-    else
+    } else if (container.errorCode == 99){
+        return 0;
+    } else
     {
-        return container.errorCode;
+        container.printBlank = 1;
+        writeFile(&container);
     }
 
     return 0;

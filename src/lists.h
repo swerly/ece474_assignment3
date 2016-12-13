@@ -55,13 +55,15 @@ typedef struct slNode{
 typedef struct{
     varNode* variables;
 	operationNode* operations;
-    char inputFilename[30];
+    char *inputFilename;
+    char errorCausingString[20];
     char* outputFilename;
 	//operationArrayNode* operationNodes;
 	int maxLatency;
     int errorCode;
     operationArrayNode** scheduledNodes;
     struct ifNodes* ifNodeList;
+    int printBlank;
 } mainContainer;
 
 
